@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
 import { useAdminUser } from '../models/users';
 import { BasicHeading1 } from '../pure/BasicHeading';
@@ -24,6 +24,11 @@ const AdminTopPage: FC<Props> = (props) => {
   return (
     <BasicLayout className="AdminTopPage">
       <BasicHeading1>Admin</BasicHeading1>
+      <ul>
+        <li>
+          <Link to="./conferences/new">Create new conference</Link>
+        </li>
+      </ul>
     </BasicLayout>
   );
 };

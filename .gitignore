@@ -14,6 +14,7 @@
 # Firebase
 .firebase
 .firebaserc
+firestore-debug.log
 
 # misc
 .DS_Store
