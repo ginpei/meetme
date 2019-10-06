@@ -2,6 +2,8 @@ import React from 'react';
 import { Route, Router, Switch } from 'react-router-dom';
 import { appHistory } from './misc';
 import HomePage from './screens/HomePage';
+import LoginPage from './screens/LoginPage';
+import LogoutPage from './screens/LogoutPage';
 import NotFoundScreen from './screens/NotFoundPage';
 
 const App: React.FC = () => {
@@ -10,6 +12,8 @@ const App: React.FC = () => {
       <div className="App">
         <Switch>
           <Route exact={true} path="/" component={HomePage}/>
+          <Route exact={true} path="/login" component={LoginPage}/>
+          <Route exact={true} path="/logout" component={LogoutPage}/>
           <Route component={NotFoundScreen}/>
         </Switch>
       </div>
