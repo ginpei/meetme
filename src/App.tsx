@@ -15,7 +15,7 @@ const App: React.FC = () => {
           <Route path="/admin/" component={AdminTopPage}/>
           <Route path="/login" component={LoginPage}/>
           <Route path="/logout" component={LogoutPage}/>
-          <Route path="/" component={HomePage}/>
+          <Route exact={true} path="/" component={HomePage}/>
           <Route component={NotFoundScreen}/>
         </Switch>
       </div>
