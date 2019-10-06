@@ -1,4 +1,5 @@
 import firebase from '../middleware/firebase';
+import { useEffect, useState } from 'react';
 
 type PathActions =
   | 'create'
@@ -17,6 +18,34 @@ export function getConferencePath(conf?: Conference, action?: PathActions) {
   }
 
   return `/admin${target}/${action}`;
+}
+
+/**
+ * @param id Conference ID
+ * @returns `[conference, initialized]`
+ */
+export function useConference(id: string): [Conference | null, boolean] {
+  const [initialized, setInitialized] = useState(false);
+  const [conf, setConf] = useState<Conference | null>(null);
+
+  useEffect(() => {
+    const coll = getConferencesCollection();
+    const doc = coll.doc(id);
+    return doc.onSnapshot({
+      next: (ss) => {
+        setInitialized(true);
+        const cur = ssToConference(ss);
+        setConf(cur);
+      },
+      error: (error) => {
+        setInitialized(true);
+        setConf(null);
+        throw error;
+      },
+    })
+  }, [id]);
+
+  return [conf, initialized];
 }
 
 function getConferencesCollection () {
@@ -38,6 +67,11 @@ export async function createNewConference(data: NewConferenceData) {
   return conf;
 }
 
+export async function saveConference(conf: Conference) {
+  const data = conferenceToDocumentData(conf);
+  await getConferencesCollection().doc(conf.id).set(data);
+}
+
 function ssToConference (ss: firebase.firestore.DocumentSnapshot): Conference {
   const data = ss.data() || {};
 
@@ -46,4 +80,9 @@ function ssToConference (ss: firebase.firestore.DocumentSnapshot): Conference {
     id: ss.id,
     name: String(data.name || ''),
   };
+}
+
+function conferenceToDocumentData (conf: Conference) {
+  const { id, ...data } = conf;
+  return data;
 }
