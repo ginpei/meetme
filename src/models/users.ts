@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import firebase from '../middleware/firebase';
 
 export type UserLevel =
@@ -19,4 +20,21 @@ export async function isAdmin (user: firebase.User) {
     console.error(error);
     return false;
   }
+}
+
+/**
+ * Returns `undefined` until the current situation is updated.
+ * After that, returns `true` or `false`.
+ */
+export function useAdminUser () {
+  const [admin, setAdmin] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    return firebase.auth().onAuthStateChanged(async (user) => {
+      const result = user ? await isAdmin(user) : false;
+      setAdmin(result);
+    });
+  }, []);
+
+  return admin;
 }
