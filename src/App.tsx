@@ -12,10 +12,10 @@ const App: React.FC = () => {
     <Router history={appHistory}>
       <div className="App">
         <Switch>
-          <Route exact={true} path="/" component={HomePage}/>
-          <Route exact={true} path="/login" component={LoginPage}/>
-          <Route exact={true} path="/logout" component={LogoutPage}/>
-          <Route exact={true} path="/admin/" component={AdminTopPage}/>
+          <Route path="/admin/" component={AdminTopPage}/>
+          <Route path="/login" component={LoginPage}/>
+          <Route path="/logout" component={LogoutPage}/>
+          <Route path="/" component={HomePage}/>
           <Route component={NotFoundScreen}/>
         </Switch>
       </div>
