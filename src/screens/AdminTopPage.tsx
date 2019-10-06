@@ -17,13 +17,8 @@ const AdminTopPage: FC<Props> = (props) => {
 
   useEffect(() => {
     return firebase.auth().onAuthStateChanged(async (user) => {
-      if (!user) {
-        setAdmin(false);
-        setAdminInitialized(true);
-        return;
-      }
-
-      setAdmin(await isAdmin(user));
+      const admin = user ? await isAdmin(user) : false;
+      setAdmin(admin);
       setAdminInitialized(true);
     });
   }, []);
