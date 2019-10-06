@@ -5,11 +5,7 @@ import firebase from '../middleware/firebase';
 import { BasicHeading1 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 
-type RouteProps = RouteComponentProps<{}>
-
-type Props = RouteProps;
-
-const LogoutPage: FC<Props> = (props) => {
+const LogoutPage: FC<RouteComponentProps> = (props) => {
   const auth = firebase.auth();
 
   const [loggedIn, setLoggedIn] = useState(Boolean(auth.currentUser));
