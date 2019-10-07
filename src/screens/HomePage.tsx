@@ -1,8 +1,9 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
-import { BasicHeading1 } from '../pure/BasicHeading';
 import firebase from '../middleware/firebase';
+import { getConferencePath } from '../models/conferences';
+import { BasicHeading1 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 
 const NoteItem: FC<{ note: any }> = (props) => {
@@ -65,6 +66,9 @@ const HomePage: React.FC = () => {
         </p>
       )}
       <ul>
+        <li>
+          <Link to={getConferencePath()}>Active Conferences</Link>
+        </li>
         {notes.map((note) => (
           <NoteItem key={note.id} note={note} />
         ))}

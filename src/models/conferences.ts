@@ -48,6 +48,30 @@ export function useConference(id: string): [Conference | null, boolean] {
   return [conf, initialized];
 }
 
+/**
+ * @returns `[conferences, initialized]`
+ */
+export function useActiveConferences(): [Conference[], boolean] {
+  const [initialized, setInitialized] = useState(false);
+  const [conferences, setConferences] = useState<Conference[]>([]);
+
+  useEffect(() => {
+    const coll = getConferencesCollection();
+    coll.onSnapshot({
+      next: (ss) => {
+        setConferences(ss.docs.map((dss) => ssToConference(dss)));
+        setInitialized(true);
+      },
+      error: (error) => {
+        setInitialized(true);
+        throw error;
+      },
+    });
+  }, []);
+
+  return [conferences, initialized];
+}
+
 function getConferencesCollection () {
   return firebase.firestore().collection('conferences');
 }
