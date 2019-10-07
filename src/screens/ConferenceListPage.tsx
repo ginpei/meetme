@@ -1,14 +1,11 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
 import { getConferencePath, useActiveConferences } from '../models/conferences';
 import { BasicHeading1 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 
-type Props = RouteComponentProps<{ id: string }>;
-
-const ConferenceListPage: React.FC<Props> = (props) => {
+const ConferenceListPage: React.FC = () => {
   const [confList, confInitialized] = useActiveConferences();
 
   if (!confInitialized) {
