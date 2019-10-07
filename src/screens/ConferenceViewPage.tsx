@@ -1,8 +1,9 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import ConferenceTimetableTable from '../basics/ConferenceTimetableTable';
 import BasicLayout from '../complexes/BasicLayout';
-import { useConference } from '../models/conferences';
-import { BasicHeading1 } from '../pure/BasicHeading';
+import { dummyTimetable, useConference } from '../models/conferences';
+import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
 
@@ -23,6 +24,8 @@ const ConferenceListPage: React.FC<Props> = (props) => {
     <BasicLayout className="ConferenceListPage">
       <BasicHeading1>{conf.name}</BasicHeading1>
       <div>{conf.description}</div>
+      <BasicHeading2>Timetable</BasicHeading2>
+      <ConferenceTimetableTable timetable={dummyTimetable} />
     </BasicLayout>
   );
 };

@@ -1,6 +1,72 @@
 import firebase from '../middleware/firebase';
 import { useEffect, useState } from 'react';
 
+export const dummyTimetable: ConferenceTimetable = {
+  rooms: [
+    { name: 'Room A' },
+    { name: 'Room B' },
+    { name: 'Room C' },
+  ],
+  schedule: [
+    {
+      startsAt: '12:00',
+      sessions: [
+        { body: 'Open' },
+        { body: '' },
+        { body: '' },
+      ],
+    },
+    {
+      startsAt: '13:00',
+      sessions: [
+        { body: 'Opening talk' },
+        { body: '' },
+        { body: '' },
+      ],
+    },
+    {
+      startsAt: '13:30',
+      sessions: [
+        { body: 'The State of JavaScript' },
+        { body: '' },
+        { body: '' },
+      ],
+    },
+    {
+      startsAt: '14:15',
+      sessions: [
+        { body: 'Visualizing Connections' },
+        { body: 'Building one touch sign-in experience using WebAuthN' },
+        { body: 'JavaScript AST プログラミング: 入門とその1歩先へ' },
+      ],
+    },
+    {
+      startsAt: '14:45',
+      sessions: [
+        { body: 'Defining Open Source' },
+        { body: 'Awakened by Accessibility' },
+        { body: 'Four Years of JS Procedural Generation' },
+      ],
+    },
+    {
+      startsAt: '15:30',
+      sessions: [
+        { body: 'TBD' },
+        { body: 'Wrap-up: Runtime-friendly JavaScript' },
+        { body: 'Technical SEO for JavaScript developers' },
+      ],
+    },
+    {
+      startsAt: '',
+      sessions: [
+        { body: '' },
+        { body: '' },
+        { body: '' },
+      ],
+    },
+  ],
+};
+
 type PathActions =
   | 'create'
   | 'edit'
@@ -83,6 +149,18 @@ export type Conference = {
 }
 
 type NewConferenceData = Pick<Conference, 'description' | 'name'>
+
+export type ConferenceTimetable = {
+  rooms: {
+    name: string;
+  }[];
+  schedule: {
+    startsAt: string;
+    sessions: {
+      body: string;
+    }[];
+  }[];
+};
 
 export async function createNewConference(data: NewConferenceData) {
   const doc = await getConferencesCollection().add(data);
