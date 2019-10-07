@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
 import { Conference, saveConference, useConference } from '../models/conferences';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
@@ -89,6 +90,9 @@ const ConferenceEditPage: React.FC<Props> = (props) => {
 
   return (
     <BasicLayout>
+      <p>
+        <Link to="/admin">← Admin</Link>
+      </p>
       <BasicHeading1>{conf.name}</BasicHeading1>
       <BasicHeading2>Basic Information</BasicHeading2>
       <ConferenceForm

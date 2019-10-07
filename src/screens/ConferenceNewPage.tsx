@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FC, FormEvent, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
 import { createNewConference, getConferencePath } from '../models/conferences';
 import { useAdminUser } from '../models/users';
@@ -53,6 +53,9 @@ const ConferenceNewPage: FC<Props> = (props) => {
 
   return (
     <BasicLayout className="ConferenceNewPage">
+      <p>
+        <Link to="/admin">← Admin</Link>
+      </p>
       <BasicHeading1>New Conference</BasicHeading1>
       <form onSubmit={onSubmit}>
         <div>
