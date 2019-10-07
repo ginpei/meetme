@@ -12,12 +12,12 @@ type RouteProps = RouteComponentProps<{}>
 type Props = RouteProps;
 
 const ConferenceNewPage: FC<Props> = (props) => {
-  const admin = useAdminUser();
+  const [admin, adminInitialized] = useAdminUser();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [working, setWorking] = useState(false);
 
-  if (admin === undefined) {
+  if (!adminInitialized) {
     return <LoadingScreen />;
   }
 

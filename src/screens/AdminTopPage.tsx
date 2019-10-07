@@ -11,9 +11,9 @@ type RouteProps = RouteComponentProps<{}>
 type Props = RouteProps;
 
 const AdminTopPage: FC<Props> = (props) => {
-  const admin = useAdminUser();
+  const [admin, adminInitialized] = useAdminUser();
 
-  if (admin === undefined) {
+  if (!adminInitialized) {
     return <LoadingScreen />;
   }
 

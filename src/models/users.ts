@@ -23,18 +23,19 @@ export async function isAdmin (user: firebase.User) {
 }
 
 /**
- * Returns `undefined` until the current situation is updated.
- * After that, returns `true` or `false`.
+ * @returns `[admin, initialized]`
  */
-export function useAdminUser () {
-  const [admin, setAdmin] = useState<boolean | undefined>(undefined);
+export function useAdminUser (): [boolean, boolean] {
+  const [initialized, setInitialized] = useState(false);
+  const [admin, setAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     return firebase.auth().onAuthStateChanged(async (user) => {
       const result = user ? await isAdmin(user) : false;
       setAdmin(result);
+      setInitialized(true);
     });
   }, []);
 
-  return admin;
+  return [admin, initialized];
 }
