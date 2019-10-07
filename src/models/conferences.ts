@@ -67,23 +67,35 @@ export const dummyTimetable: ConferenceTimetable = {
   ],
 };
 
-type PathActions =
-  | 'create'
+type InstancePathActions =
   | 'edit'
   | 'view';
 
-export function getConferencePath(conf?: Conference, action?: PathActions) {
-  const base = '/conferences';
-  if (!conf) {
+type GeneralPathActions =
+  | 'create'
+  | 'list';
+
+export function getConferencePath(action: InstancePathActions, conf: Conference): string;
+export function getConferencePath(action: GeneralPathActions): string;
+export function getConferencePath(
+  action: InstancePathActions | GeneralPathActions,
+  conf?: Conference,
+) {
+  const base = '/conferences/';
+  if (action === 'list') {
     return base;
   }
 
-  const target = `${base}/${conf.id}`;
-  if (!action || action === 'view') {
-    return target;
+  const adminBase = `/admin${base}`;
+  if (action === 'create') {
+    return `${adminBase}create`
   }
 
-  return `/admin${target}/${action}`;
+  if (action === 'view') {
+    return `${base}${conf!.id}`;
+  }
+
+  return `${adminBase}${conf!.id}/${action}`;
 }
 
 /**

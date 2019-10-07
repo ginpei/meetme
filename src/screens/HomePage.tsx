@@ -74,7 +74,7 @@ const HomePage: React.FC = () => {
       )}
       <ul>
         <li>
-          <Link to={getConferencePath()}>Active Conferences</Link>
+          <Link to={getConferencePath('list')}>Active Conferences</Link>
         </li>
         {notes.map((note) => (
           <NoteItem key={note.id} note={note} />

@@ -43,7 +43,7 @@ const ConferenceNewPage: FC<Props> = (props) => {
     setWorking(true);
     try {
       const conf = await createNewConference({ description, name });
-      const nextPath = getConferencePath(conf, 'edit');
+      const nextPath = getConferencePath('edit', conf);
       props.history.push(nextPath);
     } catch (error) {
       setWorking(false);

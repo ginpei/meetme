@@ -5,6 +5,7 @@ import { useAdminUser } from '../models/users';
 import { BasicHeading1 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
+import { getConferencePath } from '../models/conferences';
 
 type RouteProps = RouteComponentProps<{}>
 
@@ -26,7 +27,7 @@ const AdminTopPage: FC<Props> = (props) => {
       <BasicHeading1>Admin</BasicHeading1>
       <ul>
         <li>
-          <Link to="./conferences/new">Create new conference</Link>
+          <Link to={getConferencePath('create')}>Create new conference</Link>
         </li>
       </ul>
     </BasicLayout>

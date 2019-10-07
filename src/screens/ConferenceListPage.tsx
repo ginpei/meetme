@@ -18,7 +18,7 @@ const ConferenceListPage: React.FC = () => {
       <ul>
         {confList.map((conf) => (
           <li key={conf.id}>
-            <Link to={getConferencePath(conf)}>{conf.name}</Link>
+            <Link to={getConferencePath('view', conf)}>{conf.name}</Link>
           </li>
         ))}
       </ul>

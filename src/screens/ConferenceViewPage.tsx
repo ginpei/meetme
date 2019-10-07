@@ -27,7 +27,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
       <BasicHeading1>{conf.name}</BasicHeading1>
       {admin && (
         <p>
-          <Link to={getConferencePath(conf, 'edit')}>Edit</Link>
+          <Link to={getConferencePath('edit', conf)}>Edit</Link>
         </p>
       )}
       <div>{conf.description}</div>
