@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
 import firebase from '../middleware/firebase';
 import { getConferencePath } from '../models/conferences';
+import { useAdminUser } from '../models/users';
 import { BasicHeading1 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 
@@ -18,6 +19,7 @@ const HomePage: React.FC = () => {
   const [authInitialized, setAuthInitialized] = useState(false);
   const [user, setUser] = useState<firebase.User | null>(null);
   const [notesInitialized, setNotesInitialized] = useState(false);
+  const [admin, adminInitialized] = useAdminUser();
   const [notes, setNotes] = useState<any[]>([]);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ const HomePage: React.FC = () => {
     });
   }, []);
 
-  if (!authInitialized || !notesInitialized) {
+  if (!authInitialized || !adminInitialized || !notesInitialized) {
     return (
       <LoadingScreen />
     );
@@ -59,6 +61,11 @@ const HomePage: React.FC = () => {
           <p>
             <Link to="/logout">Log out</Link>
           </p>
+          {admin && (
+            <p>
+              <Link to="/admin">Admin</Link>
+            </p>
+          )}
         </>
       ) : (
         <p>
