@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import ConferenceTimetableTable from '../basics/ConferenceTimetableTable';
 import BasicLayout from '../complexes/BasicLayout';
-import { ConferenceTimetable, ConferenceTimetableSelection, getConferencePath, OnConferenceTimetableSelect, useConference, ConferenceTimetableSession } from '../models/conferences';
+import { ConferenceTimetable, ConferenceTimetableSelection, getConferencePath, OnConferenceTimetableSelect, useConference } from '../models/conferences';
 import { useAdminUser } from '../models/users';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
