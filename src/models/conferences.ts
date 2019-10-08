@@ -69,6 +69,7 @@ export const dummyTimetable: ConferenceTimetable = {
 
 type InstancePathActions =
   | 'edit'
+  | 'editTimetable'
   | 'view';
 
 type GeneralPathActions =
@@ -158,6 +159,7 @@ export type Conference = {
   description: string;
   id: string;
   name: string;
+  timeline: string;
 }
 
 type NewConferenceData = Pick<Conference, 'description' | 'name'>
@@ -193,6 +195,7 @@ function ssToConference (ss: firebase.firestore.DocumentSnapshot): Conference {
     description: String(data.description || ''),
     id: ss.id,
     name: String(data.name || ''),
+    timeline: String(data.timeline || ''),
   };
 }
 

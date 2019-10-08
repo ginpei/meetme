@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
-import { Conference, saveConference, useConference } from '../models/conferences';
+import { Conference, saveConference, useConference, getConferencePath } from '../models/conferences';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
@@ -30,8 +30,8 @@ const ConferenceForm: React.FC<ConferenceFormProps> = (props) => {
     event.preventDefault();
 
     const editedConf: Conference = {
+      ...conf,
       description,
-      id: conf.id,
       name,
     };
     props.onSubmit(editedConf);
@@ -100,6 +100,10 @@ const ConferenceEditPage: React.FC<Props> = (props) => {
         disabled={saving}
         onSubmit={onBasicsSubmit}
       />
+      <BasicHeading2>Timetable</BasicHeading2>
+      <p>
+        <Link to={getConferencePath('editTimetable', conf)}>Edit Timetable</Link>
+      </p>
     </BasicLayout>
   );
 };
