@@ -1,6 +1,6 @@
 import React from 'react';
-import { ConferenceTimetable } from '../models/conferences';
 import styled from 'styled-components';
+import { ConferenceTimetable, ConferenceTimetableSchedule, ConferenceTimetableSession, OnConferenceTimetableSelect, ConferenceTimetableSelection } from '../models/conferences';
 
 const breakPoint = '500px';
 
@@ -43,7 +43,9 @@ const Cell = styled.div`
   box-sizing: border-box;
   flex-grow: 1;
   margin: 0.2rem;
+  opacity: 0.5;
   padding: 0.4rem 1rem;
+  transition: transform 200ms;
   width: 100%;
 
   &:empty {
@@ -61,6 +63,17 @@ const Cell = styled.div`
     background-color: var(--color-timetable-bg-3);
     border-color: var(--color-timetable-fg-3);
   }
+  &.heading {
+    opacity: 1;
+  }
+  &.selecting {
+    cursor: pointer;
+    transform: scale(0.9);
+  }
+  &.selected {
+    opacity: 1;
+    transform: scale(1);
+  }
 
   @media (max-width: ${breakPoint}){
     & {
@@ -72,6 +85,56 @@ const Cell = styled.div`
     }
   }
 `;
+
+type StaticSelectableCellProps = {
+  row: ConferenceTimetableSchedule;
+  session: ConferenceTimetableSession;
+}
+
+type SelectableCellProps =
+  | StaticSelectableCellProps
+  | (StaticSelectableCellProps & {
+    index: number;
+    onSelect: OnConferenceTimetableSelect;
+    selected: boolean;
+    selecting: boolean;
+  });
+
+const SessionCell: React.FC<SelectableCellProps> = (props) => {
+  const { row, session } = props;
+
+  let className = 'selected';
+  let onClick: () => void = () => undefined;
+
+  if ('onSelect' in props) {
+    className = [
+      props.selected ? 'selected' : '',
+      props.selecting ? 'selecting' : '',
+    ].join(' ');
+
+    if (props.selecting) {
+      onClick = () => {
+        if (props.onSelect) {
+          props.onSelect(row.startsAt, props.index);
+        }
+      };
+    }
+  }
+
+  return (
+    <Cell
+      className={className}
+      onClick={onClick}
+    >
+      {session.body && (
+        <>
+          <Time>{row.startsAt}</Time>
+          <SessionBody>{session.body}</SessionBody>
+        </>
+      )}
+    </Cell>
+  );
+};
 
 const Time = styled.div`
   font-size: 0.8em;
@@ -87,33 +150,58 @@ const Time = styled.div`
 const SessionBody = styled.div`
 `;
 
-type Props = {
+type StaticProps = {
   timetable: ConferenceTimetable;
-};
+}
+
+type Props = StaticProps | (StaticProps & {
+  onSelect: OnConferenceTimetableSelect;
+  selecting: boolean;
+  selections: { [time: string]: number; };
+});
 
 const ConferenceTimetableTable: React.FC<Props> = (props) => {
   const { timetable } = props;
+
+  let onSelect: OnConferenceTimetableSelect = () => undefined;
+  let selecting = false;
+  let selections: ConferenceTimetableSelection = {};
+
+  if ('onSelect' in props) {
+    onSelect = props.onSelect;
+    selecting = props.selecting;
+    selections = props.selections;
+  }
+
+  const isSelected = (
+    selections: ConferenceTimetableSelection,
+    row: ConferenceTimetableSchedule,
+    index: number,
+  ) => {
+    return selections[row.startsAt] === index;
+  };
 
   return (
     <Table className="ConferenceTimetableTable">
       <Row>
         <RowTitle>Rooms</RowTitle>
         {timetable.rooms.map((room) => (
-          <Cell key={room.name}>{room.name}</Cell>
+          <Cell key={room.name} className="heading">{room.name}</Cell>
         ))}
       </Row>
       {timetable.schedule.map((row, rowIndex) => (
         <Row key={row.startsAt}>
           <RowTitle>{row.startsAt}</RowTitle>
           {row.sessions.map((session, cellIndex) =>
-            <Cell key={`${rowIndex}-${cellIndex}`}>
-              {session.body && (
-                <>
-                  <Time>{row.startsAt}</Time>
-                  <SessionBody>{session.body}</SessionBody>
-                </>
-              )}
-            </Cell>
+            <SessionCell
+              index={cellIndex}
+              key={`${rowIndex}-${cellIndex}`}
+              onSelect={onSelect}
+              row={row}
+              selecting={Boolean(selecting)}
+              selected={isSelected(selections, row, cellIndex)}
+              session={session}
+            />
           )}
         </Row>
       ))}

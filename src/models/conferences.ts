@@ -176,6 +176,19 @@ export type ConferenceTimetable = {
   }[];
 };
 
+export type ConferenceTimetableSchedule = ConferenceTimetable['schedule'][0]
+
+export type ConferenceTimetableSession = ConferenceTimetableSchedule['sessions'][0]
+
+export type OnConferenceTimetableSelect = (time: string, index: number) => void;
+
+export type ConferenceTimetableSelection = {
+  /**
+   * Pair of start time and room index.
+   */
+  [startsAt: string]: number;
+}
+
 export async function createNewConference(data: NewConferenceData) {
   const doc = await getConferencesCollection().add(data);
   const ss = await doc.get();
