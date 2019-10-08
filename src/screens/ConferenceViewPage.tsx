@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import ConferenceTimetableTable from '../basics/ConferenceTimetableTable';
 import BasicLayout from '../complexes/BasicLayout';
-import { dummyTimetable, getConferencePath, useConference } from '../models/conferences';
+import { dummyTimetable, getConferencePath, useConference, ConferenceTimetable } from '../models/conferences';
 import { useAdminUser } from '../models/users';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
@@ -12,6 +12,8 @@ type Props = RouteComponentProps<{ id: string }>
 
 const ConferenceListPage: React.FC<Props> = (props) => {
   const [conf, confInitialized] = useConference(props.match.params.id);
+  const [timetable, setTimetable] = useState<ConferenceTimetable | null>(null);
+  const [timetableInitialized, setTimetableInitialized] = useState(false);
   const [admin, adminInitialized] = useAdminUser();
 
   if (!confInitialized || !adminInitialized) {
@@ -20,6 +22,16 @@ const ConferenceListPage: React.FC<Props> = (props) => {
 
   if (!conf) {
     return <NotFoundScreen />
+  }
+
+  if (!timetableInitialized) {
+    setTimetableInitialized(true);
+    try {
+      const data = JSON.parse(conf.timeline);
+      setTimetable(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -33,7 +45,11 @@ const ConferenceListPage: React.FC<Props> = (props) => {
       )}
       <div>{conf.description}</div>
       <BasicHeading2>Timetable</BasicHeading2>
-      <ConferenceTimetableTable timetable={dummyTimetable} />
+      {timetable ? (
+        <ConferenceTimetableTable timetable={timetable} />
+      ) : (
+        <div>Failed to build timetable.</div>
+      )}
     </BasicLayout>
   );
 };
