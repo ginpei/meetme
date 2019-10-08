@@ -27,7 +27,7 @@ const AdminTopPage: FC<Props> = (props) => {
       <BasicHeading1>Admin</BasicHeading1>
       <ul>
         <li>
-          <Link to={getConferencePath('create')}>Create new conference</Link>
+          <Link to={getConferencePath('new')}>Create new conference</Link>
         </li>
       </ul>
     </BasicLayout>

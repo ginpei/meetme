@@ -72,7 +72,7 @@ type InstancePathActions =
   | 'view';
 
 type GeneralPathActions =
-  | 'create'
+  | 'new'
   | 'list';
 
 export function getConferencePath(action: InstancePathActions, conf: Conference): string;
@@ -87,8 +87,8 @@ export function getConferencePath(
   }
 
   const adminBase = `/admin${base}`;
-  if (action === 'create') {
-    return `${adminBase}create`
+  if (action === 'new') {
+    return `${adminBase}new`
   }
 
   if (action === 'view') {
