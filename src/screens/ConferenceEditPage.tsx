@@ -93,7 +93,9 @@ const ConferenceEditPage: React.FC<Props> = (props) => {
       <p>
         <Link to="/admin">← Admin</Link>
       </p>
-      <BasicHeading1>{conf.name}</BasicHeading1>
+      <BasicHeading1>
+        <Link to={getConferencePath('view', conf)}>{conf.name}</Link>
+      </BasicHeading1>
       <BasicHeading2>Basic Information</BasicHeading2>
       <ConferenceForm
         conf={conf}
