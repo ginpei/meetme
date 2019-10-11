@@ -35,7 +35,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
   if (!timetableInitialized) {
     setTimetableInitialized(true);
     try {
-      const data: ConferenceTimetable = JSON.parse(conf.timeline);
+      const data: ConferenceTimetable = JSON.parse(conf.timetable);
       setTimetable(data);
 
       const initialSelection = data.schedule

@@ -26,7 +26,7 @@ const TimelineEditor: React.FC<ConferenceFormProps> = (props) => {
   const onChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     props.onChange({
       ...conf,
-      timeline: event.currentTarget.value,
+      timetable: event.currentTarget.value,
     });
   };
 
@@ -34,7 +34,7 @@ const TimelineEditor: React.FC<ConferenceFormProps> = (props) => {
     <TimelineInput
       disabled={props.disabled}
       onChange={onChange}
-      value={conf.timeline}
+      value={conf.timetable}
     />
   );
 };
@@ -59,7 +59,7 @@ const ConferenceEditTimelinePage: React.FC<Props> = (props) => {
   if (!conf) {
     setConf(originalConf);
     try {
-      const newTimeline = JSON.parse(originalConf.timeline);
+      const newTimeline = JSON.parse(originalConf.timetable);
       setTimetable(newTimeline);
     } catch (error) {
       setTimetableError(String(error && error.message));
@@ -71,7 +71,7 @@ const ConferenceEditTimelinePage: React.FC<Props> = (props) => {
     setConf(conf);
 
     try {
-      const newTimeline = JSON.parse(conf.timeline);
+      const newTimeline = JSON.parse(conf.timetable);
       setTimetable(newTimeline);
       setTimetableError('');
     } catch (error) {
