@@ -6,14 +6,14 @@ type InstancePathActions =
   | 'editTimetable'
   | 'view';
 
-type GeneralPathActions =
+type StaticPathActions =
   | 'new'
   | 'list';
 
 export function getConferencePath(action: InstancePathActions, conf: Conference): string;
-export function getConferencePath(action: GeneralPathActions): string;
+export function getConferencePath(action: StaticPathActions): string;
 export function getConferencePath(
-  action: InstancePathActions | GeneralPathActions,
+  action: InstancePathActions | StaticPathActions,
   conf?: Conference,
 ) {
   const base = '/conferences/';
