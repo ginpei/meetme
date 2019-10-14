@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ConferenceAttendanceMap } from '../models/conferenceParticipants';
-import { ConferenceTimetable, ConferenceTimetableSchedule, ConferenceTimetableSelection, ConferenceTimetableSession, OnConferenceTimetableSelect } from '../models/conferences';
+import { ConferenceTimetable, ConferenceTimetableSchedule, ConferenceTimetableSession, OnConferenceTimetableSelect } from '../models/conferences';
 
 const breakPoint = '500px';
 
