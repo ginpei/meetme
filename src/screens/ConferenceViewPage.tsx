@@ -8,6 +8,7 @@ import { isAdmin, useUser } from '../models/users';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
+import ErrorScreen from './ErrorScreen';
 
 type Props = RouteComponentProps<{ id: string }>
 
@@ -36,10 +37,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
   const error = confError || userError;
   if (error) {
     return (
-      <div>
-        <h1>Error [{error.code}]</h1>
-        {error.message}
-      </div>
+      <ErrorScreen error={error} />
     );
   }
 
