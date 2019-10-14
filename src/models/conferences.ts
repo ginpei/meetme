@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import firebase from '../middleware/firebase';
 
+type FirestoreError = firebase.firestore.FirestoreError;
+
 export type Conference = {
   description: string;
   id: string;
@@ -67,11 +69,12 @@ export function getConferencePath(
 
 /**
  * @param id Conference ID
- * @returns `[conference, initialized]`
+ * @returns `[conference, initialized, error]`
  */
-export function useConference(id: string): [Conference | null, boolean] {
+export function useConference(id: string): [Conference | null, boolean, FirestoreError | null] {
   const [initialized, setInitialized] = useState(false);
   const [conf, setConf] = useState<Conference | null>(null);
+  const [error, setError] = useState<FirestoreError | null>(null);
 
   useEffect(() => {
     const coll = getConferencesCollection();
@@ -85,12 +88,12 @@ export function useConference(id: string): [Conference | null, boolean] {
       error: (error) => {
         setInitialized(true);
         setConf(null);
-        throw error;
+        setError(error);
       },
     })
   }, [id]);
 
-  return [conf, initialized];
+  return [conf, initialized, error];
 }
 
 export function getTimetable(conf: Conference): ConferenceTimetable | null {

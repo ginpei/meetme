@@ -19,9 +19,14 @@ export function useUser (auth: firebase.auth.Auth): [User | null, boolean, fireb
 
   useEffect(() => {
     return auth.onAuthStateChanged(async (fbUser) => {
-      const user = await loadUser(fbUser);
-      setUser(user);
-      setInitialized(true);
+      try {
+        const user = await loadUser(fbUser);
+        setUser(user);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setInitialized(true);
+      }
     }, (error) => {
       setError(error);
       setInitialized(true);

@@ -13,7 +13,7 @@ type Props = RouteComponentProps<{ id: string }>
 
 const ConferenceListPage: React.FC<Props> = (props) => {
   const confId = props.match.params.id;
-  const [conf, confInitialized] = useConference(confId);
+  const [conf, confInitialized, confError] = useConference(confId);
   const [selecting, setSelecting] = useState(false);
   const [selections, setSelections] = useState<ConferenceTimetableSelection>({});
   const [user, userInitialized, userError] = useUser(firebase.auth());
@@ -31,6 +31,16 @@ const ConferenceListPage: React.FC<Props> = (props) => {
 
   if (!confInitialized || !userInitialized) {
     return <LoadingScreen />
+  }
+
+  const error = confError || userError;
+  if (error) {
+    return (
+      <div>
+        <h1>Error [{error.code}]</h1>
+        {error.message}
+      </div>
+    );
   }
 
   if (!conf) {
