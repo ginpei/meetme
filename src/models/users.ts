@@ -3,7 +3,9 @@ import firebase from '../middleware/firebase';
 
 export type User = {
   id: string;
+  imageUrl: string;
   level: UserLevel;
+  name: string;
 }
 
 export type UserLevel =
@@ -57,6 +59,8 @@ function ssToUser(ss: firebase.firestore.DocumentSnapshot): User {
   const data = ss.data() || {};
   return {
     id: ss.id,
+    imageUrl: String(data.imageUrl || '/icon-512.png'),
     level: data.level || '',
+    name: String(data.name || 'Anonymouse'),
   }
 }

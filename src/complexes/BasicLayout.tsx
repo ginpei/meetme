@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import firebase from '../middleware/firebase';
+import { useUser } from '../models/users';
 
 const BasicHeaderOuter = styled.div`
   background-color: var(--color-theme-bg);
@@ -18,6 +20,33 @@ const BasicHeaderOuter = styled.div`
   }
 `;
 
+const BasicHeaderInner = styled.div.attrs({
+  className: 'ui-container',
+})`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const UserImageOuter = styled.i`
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border-radius: 0.1em;
+  display: inline-block;
+  height: 1.1em;
+  margin-right: 0.5em;
+  vertical-align: sub;
+  width: 1.1em;
+`;
+
+const UserImage: FC<{ src: string }> = (props) => (
+  <UserImageOuter
+    style={{
+      backgroundImage: `url("${props.src}")`,
+    }}
+  />
+);
 
 const BasicBody = styled.div.attrs({
   className: 'ui-container',
@@ -36,12 +65,28 @@ const BasicFooter = styled.div`
 type Prop = React.ComponentPropsWithRef<'div'>;
 
 const BasicLayout: FC<Prop> = (props) => {
+  const [user, userInitialized] = useUser(firebase.auth());
+  
   return (
     <div {...props} className={`BasicLayout ${props.className}`}>
       <BasicHeaderOuter>
-        <div className="ui-container">
-          <Link to="/" aria-label="Home">Meet Me</Link>
-        </div>
+        <BasicHeaderInner>
+          <span>
+            <Link to="/" aria-label="Home">Meet Me</Link>
+          </span>
+          <span>
+            {userInitialized && (
+              user ? (
+                <Link to="/logout">
+                  <UserImage src={user.imageUrl} />
+                  {user.name}
+                </Link>
+              ) : (
+                <Link to="/login">Login</Link>
+              )
+            )}
+          </span>
+        </BasicHeaderInner>
       </BasicHeaderOuter>
       <BasicBody>
         {props.children}
