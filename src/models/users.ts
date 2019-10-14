@@ -23,6 +23,27 @@ export async function isAdmin (user: firebase.User) {
 }
 
 /**
+ * @returns `[user, initialized, error]`
+ */
+export function useUser (auth: firebase.auth.Auth) {
+  const [error, setError] = useState<firebase.auth.Error | null>(null);
+  const [initialized, setInitialized] = useState(false);
+  const [user, setUser] = useState<firebase.User | null>(null);
+
+  useEffect(() => {
+    return auth.onAuthStateChanged(async (user) => {
+      setUser(user);
+      setInitialized(true);
+    }, (error) => {
+      setError(error);
+      setInitialized(true);
+    });
+  }, []);
+
+  return [user, initialized, error];
+}
+
+/**
  * @returns `[admin, initialized]`
  */
 export function useAdminUser (): [boolean, boolean] {

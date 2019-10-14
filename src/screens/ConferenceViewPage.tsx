@@ -3,10 +3,11 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import ConferenceTimetableTable from '../basics/ConferenceTimetableTable';
 import BasicLayout from '../complexes/BasicLayout';
 import { ConferenceTimetableSelection, getConferencePath, OnConferenceTimetableSelect, useConference, getTimetable } from '../models/conferences';
-import { useAdminUser } from '../models/users';
+import { useAdminUser, useUser } from '../models/users';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
+import firebase from '../middleware/firebase';
 
 type Props = RouteComponentProps<{ id: string }>
 
@@ -16,6 +17,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
   const [selecting, setSelecting] = useState(false);
   const [admin, adminInitialized] = useAdminUser();
   const [selections, setSelections] = useState<ConferenceTimetableSelection>({});
+  const [user, userInitialized, userError] = useUser(firebase.auth());
 
   const timetable = useMemo(
     () => conf && getTimetable(conf),
@@ -28,7 +30,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
     '14:15': 1,
   };
 
-  if (!confInitialized || !adminInitialized) {
+  if (!confInitialized || !userInitialized || !adminInitialized) {
     return <LoadingScreen />
   }
 
@@ -64,17 +66,23 @@ const ConferenceListPage: React.FC<Props> = (props) => {
       )}
       <div>{conf.description}</div>
       <BasicHeading2>Timetable</BasicHeading2>
-      <p>
-        {selecting ? (
-          <button onClick={onFinishSelectingClick}>
-            Finish selecting sessions
-          </button>
-        ) : (
-          <button onClick={onStartSelectingClick}>
-            Start selecting sessions
-          </button>
-        )}
-      </p>
+      {user ? (
+        <p>
+          {selecting ? (
+            <button onClick={onFinishSelectingClick}>
+              Finish selecting sessions
+            </button>
+          ) : (
+            <button onClick={onStartSelectingClick}>
+              Start selecting sessions
+            </button>
+          )}
+        </p>
+      ) : (
+        <p>
+          <Link to="/login">Log in to select sessions</Link>
+        </p>
+      )}
       {timetable ? (
         <ConferenceTimetableTable
           onSelect={onSelect}
