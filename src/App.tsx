@@ -17,15 +17,15 @@ const App: React.FC = () => {
     <Router history={appHistory}>
       <div className="App">
         <Switch>
-          <Route path="/admin/conferences/:id/editTimetable" component={ConferenceEditTimelinePage}/>
-          <Route path="/admin/conferences/:id/edit" component={ConferenceEditPage}/>
-          <Route path="/admin/conferences/new" component={ConferenceNewPage}/>
-          <Route path="/admin/" component={AdminTopPage}/>
-          <Route path="/conferences/:id" component={ConferenceViewPage}/>
-          <Route path="/conferences" component={ConferenceListPage}/>
-          <Route path="/login" component={LoginPage}/>
-          <Route path="/logout" component={LogoutPage}/>
           <Route exact={true} path="/" component={HomePage}/>
+          <Route exact={true} path="/admin/" component={AdminTopPage}/>
+          <Route exact={true} path="/admin/conferences/:id/edit" component={ConferenceEditPage}/>
+          <Route exact={true} path="/admin/conferences/:id/editTimetable" component={ConferenceEditTimelinePage}/>
+          <Route exact={true} path="/admin/conferences/new" component={ConferenceNewPage}/>
+          <Route exact={true} path="/conferences" component={ConferenceListPage}/>
+          <Route exact={true} path="/conferences/:id" component={ConferenceViewPage}/>
+          <Route exact={true} path="/login" component={LoginPage}/>
+          <Route exact={true} path="/logout" component={LogoutPage}/>
           <Route component={NotFoundScreen}/>
         </Switch>
       </div>
