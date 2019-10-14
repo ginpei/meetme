@@ -93,6 +93,11 @@ export function useConference(id: string): [Conference | null, boolean] {
   return [conf, initialized];
 }
 
+export function getTimetable(conf: Conference): ConferenceTimetable | null {
+  const data = JSON.parse(conf.timetable);
+  return data;
+}
+
 /**
  * @returns `[conferences, initialized]`
  */

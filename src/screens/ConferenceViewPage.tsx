@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import ConferenceTimetableTable from '../basics/ConferenceTimetableTable';
 import BasicLayout from '../complexes/BasicLayout';
-import { ConferenceTimetable, ConferenceTimetableSelection, getConferencePath, OnConferenceTimetableSelect, useConference } from '../models/conferences';
+import { ConferenceTimetableSelection, getConferencePath, OnConferenceTimetableSelect, useConference, getTimetable } from '../models/conferences';
 import { useAdminUser } from '../models/users';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
@@ -11,12 +11,16 @@ import NotFoundScreen from './NotFoundPage';
 type Props = RouteComponentProps<{ id: string }>
 
 const ConferenceListPage: React.FC<Props> = (props) => {
-  const [conf, confInitialized] = useConference(props.match.params.id);
-  const [timetable, setTimetable] = useState<ConferenceTimetable | null>(null);
-  const [timetableInitialized, setTimetableInitialized] = useState(false);
+  const confId = props.match.params.id;
+  const [conf, confInitialized] = useConference(confId);
   const [selecting, setSelecting] = useState(false);
   const [admin, adminInitialized] = useAdminUser();
   const [selections, setSelections] = useState<ConferenceTimetableSelection>({});
+
+  const timetable = useMemo(
+    () => conf && getTimetable(conf),
+    [conf && conf.timetable],
+  );
 
   // TODO implement replacing this dummy
   const userSelections: ConferenceTimetableSelection = {
@@ -30,25 +34,6 @@ const ConferenceListPage: React.FC<Props> = (props) => {
 
   if (!conf) {
     return <NotFoundScreen />
-  }
-
-  if (!timetableInitialized) {
-    setTimetableInitialized(true);
-    try {
-      const data: ConferenceTimetable = JSON.parse(conf.timetable);
-      setTimetable(data);
-
-      const initialSelection = data.schedule
-        .reduce<ConferenceTimetableSelection>((dic, { startsAt }) => {
-          dic[startsAt] = startsAt in userSelections
-            ? userSelections[startsAt]
-            : NaN;
-          return dic;
-        }, {})
-      setSelections(initialSelection);
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   const onStartSelectingClick = () => {
