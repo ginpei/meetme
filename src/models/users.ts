@@ -25,7 +25,7 @@ export async function isAdmin (user: firebase.User) {
 /**
  * @returns `[user, initialized, error]`
  */
-export function useUser (auth: firebase.auth.Auth) {
+export function useUser (auth: firebase.auth.Auth): [User | null, boolean, firebase.auth.Error | null] {
   const [error, setError] = useState<firebase.auth.Error | null>(null);
   const [initialized, setInitialized] = useState(false);
   const [user, setUser] = useState<firebase.User | null>(null);
