@@ -1,14 +1,23 @@
 import { useEffect, useState } from 'react';
 import firebase from '../middleware/firebase';
 
+export type User = {
+  id: string;
+  level: UserLevel;
+}
+
 export type UserLevel =
   | 'admin';
 
-export async function loadUser (user: firebase.User) {
-  const { uid } = user;
+export async function loadUser (fbUser: firebase.User | null) {
+  if (!fbUser) {
+    return null;
+  }
+
+  const { uid } = fbUser;
   const ss = await firebase.firestore().collection('users').doc(uid).get();
-  const data = ss.data();
-  return data;
+  const user = ssToUser(ss);
+  return user;
 }
 
 export async function isAdmin (user: firebase.User) {
@@ -28,10 +37,11 @@ export async function isAdmin (user: firebase.User) {
 export function useUser (auth: firebase.auth.Auth): [User | null, boolean, firebase.auth.Error | null] {
   const [error, setError] = useState<firebase.auth.Error | null>(null);
   const [initialized, setInitialized] = useState(false);
-  const [user, setUser] = useState<firebase.User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    return auth.onAuthStateChanged(async (user) => {
+    return auth.onAuthStateChanged(async (fbUser) => {
+      const user = await loadUser(fbUser);
       setUser(user);
       setInitialized(true);
     }, (error) => {
@@ -59,4 +69,12 @@ export function useAdminUser (): [boolean, boolean] {
   }, []);
 
   return [admin, initialized];
+}
+
+function ssToUser(ss: firebase.firestore.DocumentSnapshot): User {
+  const data = ss.data() || {};
+  return {
+    id: ss.id,
+    level: data.level || '',
+  }
 }
