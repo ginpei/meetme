@@ -84,6 +84,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
         <p>
           {selecting ? (
             <button onClick={onFinishSelectingClick}>
+              <span aria-hidden>✔️</span>
               Finish selecting sessions
             </button>
           ) : (
