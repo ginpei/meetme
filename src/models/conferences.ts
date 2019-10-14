@@ -1,5 +1,37 @@
-import firebase from '../middleware/firebase';
 import { useEffect, useState } from 'react';
+import firebase from '../middleware/firebase';
+
+export type Conference = {
+  description: string;
+  id: string;
+  name: string;
+  timetable: string;
+}
+
+export type ConferenceTimetable = {
+  rooms: {
+    name: string;
+  }[];
+  schedule: {
+    startsAt: string;
+    sessions: {
+      body: string;
+    }[];
+  }[];
+}
+
+export type ConferenceTimetableSchedule = ConferenceTimetable['schedule'][0]
+
+export type ConferenceTimetableSession = ConferenceTimetableSchedule['sessions'][0]
+
+export type OnConferenceTimetableSelect = (time: string, index: number) => void;
+
+export type ConferenceTimetableSelection = {
+  /**
+   * Pair of start time and room index.
+   */
+  [startsAt: string]: number;
+}
 
 type InstancePathActions =
   | 'edit'
@@ -85,43 +117,7 @@ export function useActiveConferences(): [Conference[], boolean] {
   return [conferences, initialized];
 }
 
-function getConferencesCollection () {
-  return firebase.firestore().collection('conferences');
-}
-
-export type Conference = {
-  description: string;
-  id: string;
-  name: string;
-  timetable: string;
-}
-
 type NewConferenceData = Pick<Conference, 'description' | 'name'>
-
-export type ConferenceTimetable = {
-  rooms: {
-    name: string;
-  }[];
-  schedule: {
-    startsAt: string;
-    sessions: {
-      body: string;
-    }[];
-  }[];
-};
-
-export type ConferenceTimetableSchedule = ConferenceTimetable['schedule'][0]
-
-export type ConferenceTimetableSession = ConferenceTimetableSchedule['sessions'][0]
-
-export type OnConferenceTimetableSelect = (time: string, index: number) => void;
-
-export type ConferenceTimetableSelection = {
-  /**
-   * Pair of start time and room index.
-   */
-  [startsAt: string]: number;
-}
 
 export async function createNewConference(data: NewConferenceData) {
   const doc = await getConferencesCollection().add(data);
@@ -133,6 +129,10 @@ export async function createNewConference(data: NewConferenceData) {
 export async function saveConference(conf: Conference) {
   const data = conferenceToDocumentData(conf);
   await getConferencesCollection().doc(conf.id).set(data);
+}
+
+function getConferencesCollection () {
+  return firebase.firestore().collection('conferences');
 }
 
 function ssToConference (ss: firebase.firestore.DocumentSnapshot): Conference {
