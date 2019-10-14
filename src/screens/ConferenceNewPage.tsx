@@ -1,8 +1,9 @@
 import React, { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
+import firebase from '../middleware/firebase';
 import { createNewConference, getConferencePath } from '../models/conferences';
-import { useAdminUser } from '../models/users';
+import { isAdmin, useUser } from '../models/users';
 import { BasicHeading1 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
@@ -12,16 +13,16 @@ type RouteProps = RouteComponentProps<{}>
 type Props = RouteProps;
 
 const ConferenceNewPage: FC<Props> = (props) => {
-  const [admin, adminInitialized] = useAdminUser();
+  const [user, userInitialized] = useUser(firebase.auth());
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [working, setWorking] = useState(false);
 
-  if (!adminInitialized) {
+  if (!userInitialized) {
     return <LoadingScreen />;
   }
 
-  if (!admin) {
+  if (!isAdmin(user)) {
     return <NotFoundScreen />
   }
 

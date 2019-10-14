@@ -4,7 +4,7 @@ import ConferenceTimetableTable from '../basics/ConferenceTimetableTable';
 import BasicLayout from '../complexes/BasicLayout';
 import firebase from '../middleware/firebase';
 import { ConferenceTimetableSelection, getConferencePath, getTimetable, OnConferenceTimetableSelect, useConference } from '../models/conferences';
-import { useAdminUser, useUser } from '../models/users';
+import { isAdmin, useUser } from '../models/users';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
@@ -13,7 +13,6 @@ type Props = RouteComponentProps<{ id: string }>
 
 const ConferenceListPage: React.FC<Props> = (props) => {
   const confId = props.match.params.id;
-  const [admin, adminInitialized] = useAdminUser();
   const [conf, confInitialized] = useConference(confId);
   const [selecting, setSelecting] = useState(false);
   const [selections, setSelections] = useState<ConferenceTimetableSelection>({});
@@ -30,7 +29,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
     '14:15': 1,
   };
 
-  if (!confInitialized || !userInitialized || !adminInitialized) {
+  if (!confInitialized || !userInitialized) {
     return <LoadingScreen />
   }
 
@@ -58,7 +57,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
   return (
     <BasicLayout className="ConferenceListPage">
       <BasicHeading1>{conf.name}</BasicHeading1>
-      {admin && (
+      {isAdmin(user) && (
         <p>
           {'Admin: '}
           <Link to={getConferencePath('edit', conf)}>Edit</Link>

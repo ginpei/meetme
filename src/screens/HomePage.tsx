@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
 import firebase from '../middleware/firebase';
 import { getConferencePath } from '../models/conferences';
-import { useAdminUser } from '../models/users';
+import { isAdmin, useUser } from '../models/users';
 import { BasicHeading1 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 
@@ -16,18 +16,9 @@ const NoteItem: FC<{ note: any }> = (props) => {
 };
 
 const HomePage: React.FC = () => {
-  const [authInitialized, setAuthInitialized] = useState(false);
-  const [user, setUser] = useState<firebase.User | null>(null);
   const [notesInitialized, setNotesInitialized] = useState(false);
-  const [admin, adminInitialized] = useAdminUser();
+  const [user, userInitialized] = useUser(firebase.auth());
   const [notes, setNotes] = useState<any[]>([]);
-
-  useEffect(() => {
-    return firebase.auth().onAuthStateChanged((curUser) => {
-      setAuthInitialized(true);
-      setUser(curUser);
-    });
-  }, []);
 
   useEffect(() => {
     return firebase.firestore().collection('free-notes').onSnapshot({
@@ -46,7 +37,7 @@ const HomePage: React.FC = () => {
     });
   }, []);
 
-  if (!authInitialized || !adminInitialized || !notesInitialized) {
+  if (!userInitialized || !notesInitialized) {
     return (
       <LoadingScreen />
     );
@@ -57,11 +48,11 @@ const HomePage: React.FC = () => {
       <BasicHeading1>Home</BasicHeading1>
       {user ? (
         <>
-          <p>Welcome {user.displayName || 'Somebody'}</p>
+          <p>Welcome!</p>
           <p>
             <Link to="/logout">Log out</Link>
           </p>
-          {admin && (
+          {isAdmin(user) && (
             <p>
               <Link to="/admin">Admin</Link>
             </p>

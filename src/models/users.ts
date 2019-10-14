@@ -31,24 +31,6 @@ export function useUser (auth: firebase.auth.Auth): [User | null, boolean, fireb
   return [user, initialized, error];
 }
 
-/**
- * @returns `[admin, initialized]`
- */
-export function useAdminUser (): [boolean, boolean] {
-  const [initialized, setInitialized] = useState(false);
-  const [admin, setAdmin] = useState<boolean>(false);
-
-  useEffect(() => {
-    return firebase.auth().onAuthStateChanged(async (user) => {
-      const result = user ? await isAdmin(user) : false;
-      setAdmin(result);
-      setInitialized(true);
-    });
-  }, []);
-
-  return [admin, initialized];
-}
-
 export async function loadUser (fbUser: firebase.User | null) {
   if (!fbUser) {
     return null;
@@ -60,15 +42,10 @@ export async function loadUser (fbUser: firebase.User | null) {
   return user;
 }
 
-export async function isAdmin (user: firebase.User) {
-  try {
-    const data = await loadUser(user);
-    const level = data && data.level as UserLevel;
-    return level === 'admin';
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
+export function isAdmin (user: User | null) {
+  return user
+    ? user.level === 'admin'
+    : false;
 }
 
 function ssToUser(ss: firebase.firestore.DocumentSnapshot): User {

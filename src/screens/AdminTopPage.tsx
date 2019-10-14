@@ -1,24 +1,25 @@
 import React, { FC } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import BasicLayout from '../complexes/BasicLayout';
-import { useAdminUser } from '../models/users';
+import firebase from '../middleware/firebase';
+import { getConferencePath } from '../models/conferences';
+import { isAdmin, useUser } from '../models/users';
 import { BasicHeading1 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
-import { getConferencePath } from '../models/conferences';
 
 type RouteProps = RouteComponentProps<{}>
 
 type Props = RouteProps;
 
 const AdminTopPage: FC<Props> = (props) => {
-  const [admin, adminInitialized] = useAdminUser();
+  const [user, userInitialized] = useUser(firebase.auth());
 
-  if (!adminInitialized) {
+  if (!userInitialized) {
     return <LoadingScreen />;
   }
 
-  if (!admin) {
+  if (!isAdmin(user)) {
     return <NotFoundScreen />
   }
 
