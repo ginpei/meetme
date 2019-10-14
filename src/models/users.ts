@@ -31,7 +31,7 @@ export function useUser (auth: firebase.auth.Auth): [User | null, boolean, fireb
       setError(error);
       setInitialized(true);
     });
-  }, []);
+  }, [auth]);
 
   return [user, initialized, error];
 }

@@ -21,14 +21,15 @@ const ConferenceListPage: React.FC<Props> = (props) => {
 
   const timetable = useMemo(
     () => conf && getTimetable(conf),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [conf && conf.timetable],
   );
 
-  // TODO implement replacing this dummy
-  const userSelections: ConferenceTimetableSelection = {
-    '12:00': 0,
-    '14:15': 1,
-  };
+  // // TODO implement replacing this dummy
+  // const userSelections: ConferenceTimetableSelection = {
+  //   '12:00': 0,
+  //   '14:15': 1,
+  // };
 
   if (!confInitialized || !userInitialized) {
     return <LoadingScreen />
