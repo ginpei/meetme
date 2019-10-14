@@ -3,21 +3,29 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import ConferenceTimetableTable from '../basics/ConferenceTimetableTable';
 import BasicLayout from '../complexes/BasicLayout';
 import firebase from '../middleware/firebase';
-import { ConferenceTimetableSelection, getConferencePath, getTimetable, OnConferenceTimetableSelect, useConference } from '../models/conferences';
+import { saveConferenceAttendance, useConferenceAttendance } from '../models/conferenceParticipants';
+import { getConferencePath, getTimetable, OnConferenceTimetableSelect, useConference } from '../models/conferences';
 import { isAdmin, useUser } from '../models/users';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
+import ErrorScreen from './ErrorScreen';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
-import ErrorScreen from './ErrorScreen';
 
 type Props = RouteComponentProps<{ id: string }>
 
 const ConferenceListPage: React.FC<Props> = (props) => {
   const confId = props.match.params.id;
+  const firestore = firebase.firestore();
+
   const [conf, confInitialized, confError] = useConference(confId);
   const [selecting, setSelecting] = useState(false);
-  const [selections, setSelections] = useState<ConferenceTimetableSelection>({});
   const [user, userInitialized, userError] = useUser(firebase.auth());
+
+  const [attendance, attInitialized, attError, setAttendance] = useConferenceAttendance(
+    firestore,
+    confId,
+    user && user.id,
+  );
 
   const timetable = useMemo(
     () => conf && getTimetable(conf),
@@ -25,17 +33,11 @@ const ConferenceListPage: React.FC<Props> = (props) => {
     [conf && conf.timetable],
   );
 
-  // // TODO implement replacing this dummy
-  // const userSelections: ConferenceTimetableSelection = {
-  //   '12:00': 0,
-  //   '14:15': 1,
-  // };
-
-  if (!confInitialized || !userInitialized) {
+  if (!confInitialized || !userInitialized || (user && !attInitialized)) {
     return <LoadingScreen />
   }
 
-  const error = confError || userError;
+  const error = confError || userError || attError;
   if (error) {
     return (
       <ErrorScreen error={error} />
@@ -54,13 +56,17 @@ const ConferenceListPage: React.FC<Props> = (props) => {
     setSelecting(false);
   };
 
-  const onSelect: OnConferenceTimetableSelect = (startsAt, index) => {
-    const selectedIndex = selections[startsAt] === index ? NaN : index;
-    const update = {
-      ...selections,
-      [startsAt]: selectedIndex,
+  const onSelect: OnConferenceTimetableSelect = async (startsAt, index) => {
+    const selection = attendance[startsAt] === index
+      ? NaN
+      : index;
+    const newMap = {
+      ...attendance,
+      [startsAt]: selection,
     };
-    setSelections(update);
+    setAttendance(newMap);
+
+    await saveConferenceAttendance(firestore, confId, user!.id, newMap);
   };
 
   return (
@@ -95,7 +101,7 @@ const ConferenceListPage: React.FC<Props> = (props) => {
         <ConferenceTimetableTable
           onSelect={onSelect}
           selecting={selecting}
-          selections={selections}
+          selections={attendance}
           timetable={timetable}
         />
       ) : (

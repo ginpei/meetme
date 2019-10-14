@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ConferenceTimetable, ConferenceTimetableSchedule, ConferenceTimetableSession, OnConferenceTimetableSelect, ConferenceTimetableSelection } from '../models/conferences';
+import { ConferenceAttendanceMap } from '../models/conferenceParticipants';
+import { ConferenceTimetable, ConferenceTimetableSchedule, ConferenceTimetableSelection, ConferenceTimetableSession, OnConferenceTimetableSelect } from '../models/conferences';
 
 const breakPoint = '500px';
 
@@ -157,7 +158,7 @@ type StaticProps = {
 type Props = StaticProps | (StaticProps & {
   onSelect: OnConferenceTimetableSelect;
   selecting: boolean;
-  selections: { [time: string]: number; };
+  selections: ConferenceAttendanceMap;
 });
 
 const ConferenceTimetableTable: React.FC<Props> = (props) => {
@@ -165,7 +166,7 @@ const ConferenceTimetableTable: React.FC<Props> = (props) => {
 
   let onSelect: OnConferenceTimetableSelect = () => undefined;
   let selecting = false;
-  let selections: ConferenceTimetableSelection = {};
+  let selections: ConferenceAttendanceMap = {};
 
   if ('onSelect' in props) {
     onSelect = props.onSelect;
@@ -174,11 +175,11 @@ const ConferenceTimetableTable: React.FC<Props> = (props) => {
   }
 
   const isSelected = (
-    selections: ConferenceTimetableSelection,
+    selections: ConferenceAttendanceMap,
     row: ConferenceTimetableSchedule,
     index: number,
   ) => {
-    return selections[row.startsAt] === index;
+    return index === selections[row.startsAt];
   };
 
   return (
