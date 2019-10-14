@@ -9,28 +9,6 @@ export type User = {
 export type UserLevel =
   | 'admin';
 
-export async function loadUser (fbUser: firebase.User | null) {
-  if (!fbUser) {
-    return null;
-  }
-
-  const { uid } = fbUser;
-  const ss = await firebase.firestore().collection('users').doc(uid).get();
-  const user = ssToUser(ss);
-  return user;
-}
-
-export async function isAdmin (user: firebase.User) {
-  try {
-    const data = await loadUser(user);
-    const level = data && data.level as UserLevel;
-    return level === 'admin';
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
 /**
  * @returns `[user, initialized, error]`
  */
@@ -69,6 +47,28 @@ export function useAdminUser (): [boolean, boolean] {
   }, []);
 
   return [admin, initialized];
+}
+
+export async function loadUser (fbUser: firebase.User | null) {
+  if (!fbUser) {
+    return null;
+  }
+
+  const { uid } = fbUser;
+  const ss = await firebase.firestore().collection('users').doc(uid).get();
+  const user = ssToUser(ss);
+  return user;
+}
+
+export async function isAdmin (user: firebase.User) {
+  try {
+    const data = await loadUser(user);
+    const level = data && data.level as UserLevel;
+    return level === 'admin';
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 function ssToUser(ss: firebase.firestore.DocumentSnapshot): User {
