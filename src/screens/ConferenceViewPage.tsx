@@ -1,21 +1,21 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import ConferenceTimetableTable from '../basics/ConferenceTimetableTable';
 import BasicLayout from '../complexes/BasicLayout';
-import { ConferenceTimetableSelection, getConferencePath, OnConferenceTimetableSelect, useConference, getTimetable } from '../models/conferences';
+import firebase from '../middleware/firebase';
+import { ConferenceTimetableSelection, getConferencePath, getTimetable, OnConferenceTimetableSelect, useConference } from '../models/conferences';
 import { useAdminUser, useUser } from '../models/users';
 import { BasicHeading1, BasicHeading2 } from '../pure/BasicHeading';
 import LoadingScreen from './LoadingScreen';
 import NotFoundScreen from './NotFoundPage';
-import firebase from '../middleware/firebase';
 
 type Props = RouteComponentProps<{ id: string }>
 
 const ConferenceListPage: React.FC<Props> = (props) => {
   const confId = props.match.params.id;
+  const [admin, adminInitialized] = useAdminUser();
   const [conf, confInitialized] = useConference(confId);
   const [selecting, setSelecting] = useState(false);
-  const [admin, adminInitialized] = useAdminUser();
   const [selections, setSelections] = useState<ConferenceTimetableSelection>({});
   const [user, userInitialized, userError] = useUser(firebase.auth());
 
